@@ -213,7 +213,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           chmod +x ./auto_builder.py
-          python ./auto_builder.py Ethiquema ethiquema-pack
+          python ./auto_builder.py ${{ github.repository }} release
 
       - name: Get build output
         id: build

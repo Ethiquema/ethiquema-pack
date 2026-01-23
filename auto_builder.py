@@ -496,12 +496,12 @@ def integrate_installer_payload(staging_dir: Path):
 def create_config_ini(staging_dir: Path, target_repo: str):
     """
     Génère un config.ini pour HATS Tools.
-    pack_url = releases du repo cible (owner/repo), dans /config/hats-tool/config.ini.
+    pack_url = releases du repo cible (owner/repo), dans /config/hats-tools/config.ini.
     """
     repo = target_repo or os.getenv("GITHUB_REPOSITORY", "sthetix/HATS")
     pack_url = f"https://api.github.com/repos/{repo}/releases"
 
-    cfg_path = staging_dir / "config" / "hats-tool" / "config.ini"
+    cfg_path = staging_dir / "config" / "hats-tools" / "config.ini"
     cfg_path.parent.mkdir(parents=True, exist_ok=True)
     with open(cfg_path, "w", encoding="utf-8") as f:
         f.write(
