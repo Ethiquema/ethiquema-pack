@@ -1,0 +1,423 @@
+{
+  "Lockpick_RCM_Pro": {
+    "asset_info": {
+      "version": "1.9.16"
+    },
+    "asset_patterns": [
+      {
+        "pattern": "Lockpick*.zip",
+        "processing_steps": [
+          {
+            "action": "unzip_to_root"
+          }
+        ]
+      }
+    ],
+    "category": "Payloads",
+    "description": "Prod.keys and Prodinfo dumper",
+    "name": "Lockpick_RCM_Pro",
+    "repo": "sthetix/Lockpick_RCM_Pro",
+    "source_type": "github_release"
+  },
+  "Sigpatches": {
+    "asset_info": {
+      "version": "1.9.8"
+    },
+    "asset_patterns": [
+      {
+        "pattern": "SystemEnhancer*.zip",
+        "processing_steps": [
+          {
+            "action": "unzip_to_root"
+          }
+        ]
+      }
+    ],
+    "category": "Patches",
+    "description": "Signature patches to run games",
+    "name": "Sigpatches",
+    "repo": "NexlifyHub/SystemEnhancer",
+    "source_type": "github_release"
+  },
+  "aio_updater": {
+    "asset_info": {
+      "version": "2.23.3"
+    },
+    "asset_patterns": [
+      {
+        "pattern": "aio-switch-updater.zip",
+        "processing_steps": [
+          {
+            "action": "unzip_to_root"
+          }
+        ]
+      }
+    ],
+    "category": "Homebrew Apps",
+    "description": "Update everything from your Switch.",
+    "name": "AIO-Switch-Updater",
+    "repo": "HamletDuFromage/aio-switch-updater",
+    "source_type": "github_release"
+  },
+  "atmosphere": {
+    "asset_info": {
+      "version": "1.10.2"
+    },
+    "asset_patterns": [
+      {
+        "pattern": "atmosphere-*.zip",
+        "processing_steps": [
+          {
+            "action": "unzip_to_root"
+          }
+        ]
+      }
+    ],
+    "category": "Essential",
+    "description": "Core CFW. Essential.",
+    "name": "Atmosphere",
+    "repo": "Atmosphere-NX/Atmosphere",
+    "source_type": "github_release"
+  },
+  "dns_mitm_manager": {
+    "asset_info": {
+      "version": "0.2.0"
+    },
+    "asset_patterns": [
+      {
+        "pattern": "DNS-MITM_Manager.zip",
+        "processing_steps": [
+          {
+            "action": "unzip_to_root"
+          }
+        ]
+      }
+    ],
+    "category": "Tesla Overlays",
+    "description": "Tesla overlay for managing DNS redirection.",
+    "name": "DNS MITM Manager",
+    "repo": "sthetix/DNS-MITM_Manager",
+    "source_type": "github_release"
+  },
+  "emuiibo": {
+    "asset_info": {
+      "version": "1.1.2"
+    },
+    "asset_patterns": [
+      {
+        "pattern": "emuiibo.zip",
+        "processing_steps": [
+          {
+            "action": "unzip_subfolder_to_root",
+            "subfolder_name": "SdOut"
+          }
+        ]
+      }
+    ],
+    "category": "Tesla Overlays",
+    "description": "Virtual amiibo (amiibo emulation) system for Nintendo Switch",
+    "name": "emuiibo",
+    "repo": "XorTroll/emuiibo",
+    "source_type": "github_release"
+  },
+  "hekate": {
+    "asset_info": {
+      "version": "v6.5.0"
+    },
+    "asset_patterns": [
+      {
+        "pattern": "hekate-ext*.zip",
+        "processing_steps": [
+          {
+            "action": "unzip_to_root"
+          }
+        ]
+      }
+    ],
+    "category": "Essential",
+    "description": "Bootloader and tools. Essential.",
+    "name": "Hekate-ext",
+    "repo": "sthetix/hekate-ext",
+    "source_type": "github_release"
+  },
+  "jksv": {
+    "asset_info": {
+      "version": "12/02/2025"
+    },
+    "asset_patterns": [
+      {
+        "pattern": "JKSV.nro",
+        "processing_steps": [
+          {
+            "action": "copy_file",
+            "target_path": "/switch/"
+          }
+        ]
+      }
+    ],
+    "category": "Homebrew Apps",
+    "default": false,
+    "description": "Save file backup and restore tool.",
+    "name": "JKSV",
+    "repo": "J-D-K/JKSV",
+    "source_type": "github_release"
+  },
+  "linkalho": {
+    "asset_info": {
+      "version": "v2.0.2"
+    },
+    "asset_patterns": [
+      {
+        "pattern": "linkalho-*.zip",
+        "processing_steps": [
+          {
+            "action": "unzip_to_root"
+          }
+        ]
+      }
+    ],
+    "category": "Homebrew Apps",
+    "description": "Link your Nintendo Account offline.",
+    "name": "Linkalho",
+    "repo": "impeeza/linkalho",
+    "source_type": "github_release"
+  },
+  "mission_control": {
+    "asset_info": {
+      "version": "v0.14.2"
+    },
+    "asset_patterns": [
+      {
+        "pattern": "MissionControl-*.zip",
+        "processing_steps": [
+          {
+            "action": "unzip_to_root"
+          }
+        ]
+      }
+    ],
+    "category": "Patches",
+    "default": false,
+    "description": "Use other console controllers on your Switch.",
+    "name": "MissionControl",
+    "repo": "ndeadly/MissionControl",
+    "source_type": "github_release"
+  },
+  "nx-ovlloader": {
+    "asset_info": {
+      "version": "v2.0.0"
+    },
+    "asset_patterns": [
+      {
+        "pattern": "nx-ovlloader.zip",
+        "processing_steps": [
+          {
+            "action": "unzip_to_root"
+          }
+        ]
+      }
+    ],
+    "category": "Patches",
+    "default": false,
+    "description": "Host process for loading Switch overlay OVLs (NROs).",
+    "name": "nx-ovlloader",
+    "repo": "ppkantorski/nx-ovlloader",
+    "source_type": "github_release"
+  },
+  "prodinfo_gen": {
+    "asset_info": {
+      "version": "v1.1.0"
+    },
+    "asset_patterns": [
+      {
+        "pattern": "prodinfo_gen.bin",
+        "processing_steps": [
+          {
+            "action": "copy_file",
+            "target_path": "/bootloader/payloads/"
+          }
+        ]
+      }
+    ],
+    "category": "Payloads",
+    "default": false,
+    "description": "A payload to generate prod.info.",
+    "name": "Prodinfo_gen",
+    "repo": "CaramelDunes/prodinfo_gen",
+    "source_type": "github_release"
+  },
+  "sphaira": {
+    "asset_info": {
+      "version": "1.0.0"
+    },
+    "asset_patterns": [
+      {
+        "pattern": "sphaira.zip",
+        "processing_steps": [
+          {
+            "action": "unzip_to_root"
+          },
+          {
+            "action": "find_and_copy",
+            "pattern": "sphaira.nro",
+            "target_path": "/hbmenu.nro"
+          }
+        ]
+      }
+    ],
+    "category": "Homebrew Apps",
+    "description": "A minimal reimplementation of the barrel.",
+    "name": "Sphaira",
+    "repo": "ITotalJustice/sphaira",
+    "source_type": "github_release"
+  },
+  "status_monitor_overlay": {
+    "asset_info": {
+      "version": "1.3.2"
+    },
+    "asset_patterns": [
+      {
+        "pattern": "Status-Monitor-Overlay.zip",
+        "processing_steps": [
+          {
+            "action": "unzip_to_root"
+          }
+        ]
+      }
+    ],
+    "category": "Tesla Overlays",
+    "default": false,
+    "description": "Displays FPS, temps, and clock speeds.",
+    "name": "Status Monitor Overlay",
+    "repo": "masagrator/Status-Monitor-Overlay",
+    "source_type": "github_release"
+  },
+  "sys-clk-base": {
+    "asset_info": {
+      "version": "2.0.1"
+    },
+    "asset_patterns": [
+      {
+        "pattern": "sys-clk*.zip",
+        "processing_steps": [
+          {
+            "action": "unzip_to_root"
+          },
+          {
+            "action": "delete_file",
+            "path": "/README.md"
+          }
+        ]
+      }
+    ],
+    "category": "Tesla Overlays",
+    "description": "sys-clk base files",
+    "name": "sys-clk base files",
+    "repo": "retronx-team/sys-clk",
+    "source_type": "github_release"
+  },
+  "sys_clk": {
+    "asset_info": {
+      "version": "2.0.1+r21"
+    },
+    "asset_patterns": [
+      {
+        "pattern": "sys-clk-overlay.ovl",
+        "processing_steps": [
+          {
+            "action": "copy_file",
+            "target_path": "/switch/.overlays"
+          }
+        ]
+      }
+    ],
+    "category": "Tesla Overlays",
+    "description": "Sysmodule for overclocking.",
+    "name": "sys-clk",
+    "repo": "ppkantorski/sys-clk",
+    "source_type": "github_release"
+  },
+  "sys_patch": {
+    "asset_info": {
+      "version": "v1.5.9"
+    },
+    "asset_patterns": [
+      {
+        "pattern": "sys-patch*.zip",
+        "processing_steps": [
+          {
+            "action": "unzip_to_root"
+          }
+        ]
+      }
+    ],
+    "category": "Tesla Overlays",
+    "description": "A sysmodule to apply runtime code patches.",
+    "name": "Sys-patch",
+    "repo": "impeeza/sys-patch",
+    "source_type": "github_release"
+  },
+  "sysmodules_overlay": {
+    "asset_info": {
+      "version": "v1.4.7"
+    },
+    "asset_patterns": [
+      {
+        "pattern": "ovlSysmodules.ovl",
+        "processing_steps": [
+          {
+            "action": "copy_file",
+            "target_path": "/switch/.overlays/"
+          }
+        ]
+      }
+    ],
+    "category": "Tesla Overlays",
+    "default": false,
+    "description": "Tesla overlay for managing sysmodules.",
+    "name": "Sysmodules Overlay",
+    "repo": "ppkantorski/ovl-sysmodules",
+    "source_type": "github_release"
+  },
+  "tegraexplorer": {
+    "asset_info": {
+      "version": "4.2.1"
+    },
+    "asset_patterns": [
+      {
+        "pattern": "TegraExplorer*.zip",
+        "processing_steps": [
+          {
+            "action": "unzip_to_root"
+          }
+        ]
+      }
+    ],
+    "category": "Payloads",
+    "description": "A payload-based file explorer.",
+    "name": "TegraExplorer",
+    "repo": "sthetix/TegraExplorer",
+    "source_type": "github_release"
+  },
+  "ultrahand_overlay": {
+    "asset_info": {
+      "version": "v2.2.7"
+    },
+    "asset_patterns": [
+      {
+        "pattern": "ovlmenu.ovl",
+        "processing_steps": [
+          {
+            "action": "copy_file",
+            "target_path": "/switch/.overlays/"
+          }
+        ]
+      }
+    ],
+    "category": "Tesla Overlays",
+    "description": "A new Tesla menu reimplementation.",
+    "name": "Ultrahand Overlay",
+    "repo": "ppkantorski/Ultrahand-Overlay",
+    "source_type": "github_release"
+  }
+}

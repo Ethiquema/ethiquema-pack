@@ -1,0 +1,240 @@
+name: Build and Release
+
+on:
+  push:
+    branches:
+      - main
+  schedule:
+    # Toutes les 24h à 6h UTC
+    - cron: '0 6 * * *'
+  workflow_dispatch:
+
+jobs:
+  update-and-build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Check and update dependency versions
+        id: update
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          python3 << 'SCRIPT'
+          import json
+          import os
+          import re
+          from urllib import request, error
+
+          def get_latest_version(owner_repo):
+              """Récupère la dernière version depuis GitHub releases.
+              owner_repo: format 'owner/repo' (ex: 'sthetix/HATS-Tools')
+              """
+              token = os.getenv("GITHUB_TOKEN")
+              headers = {
+                  "Accept": "application/vnd.github+json",
+                  "User-Agent": "Version-Checker",
+              }
+              if token:
+                  headers["Authorization"] = f"Bearer {token}"
+
+              # owner_repo = "sthetix/HATS-Tools" -> URL = "https://api.github.com/repos/sthetix/HATS-Tools/releases/latest"
+              url = f"https://api.github.com/repos/{owner_repo}/releases/latest"
+              print(f"  Fetching: {url}")
+              req = request.Request(url, headers=headers)
+
+              try:
+                  with request.urlopen(req, timeout=30) as resp:
+                      data = json.loads(resp.read().decode())
+                      return data.get("tag_name", "")
+              except error.HTTPError as e:
+                  if e.code == 404:
+                      # Pas de release, essayer les tags
+                      url = f"https://api.github.com/repos/{owner_repo}/tags?per_page=1"
+                      req = request.Request(url, headers=headers)
+                      try:
+                          with request.urlopen(req, timeout=30) as resp:
+                              data = json.loads(resp.read().decode())
+                              if data:
+                                  return data[0].get("name", "")
+                      except:
+                          pass
+                  print(f"  Erreur pour {owner_repo}: HTTP {e.code}")
+                  return None
+              except Exception as e:
+                  print(f"  Erreur pour {owner_repo}: {e}")
+                  return None
+
+          # Charger components.json
+          with open("components.json", "r", encoding="utf-8") as f:
+              components = json.load(f)
+
+          updated = []
+          for comp_id, comp_data in components.items():
+              owner_repo = comp_data.get("repo", "")
+              if not owner_repo or comp_data.get("source_type") == "direct_url":
+                  continue
+
+              current_version = comp_data.get("asset_info", {}).get("version", "")
+              print(f"Checking {comp_id} (repo: {owner_repo})...")
+
+              latest = get_latest_version(owner_repo)
+              if not latest:
+                  continue
+
+              # Normaliser pour comparaison
+              current_clean = current_version.lstrip("v")
+              latest_clean = latest.lstrip("v")
+
+              if current_clean != latest_clean:
+                  print(f"  UPDATE: {current_version} -> {latest}")
+                  components[comp_id]["asset_info"]["version"] = latest
+                  updated.append(f"{comp_data.get('name', comp_id)}: {current_version} -> {latest}")
+
+          # Sauvegarder si changements
+          if updated:
+              with open("components.json", "w", encoding="utf-8") as f:
+                  json.dump(components, f, indent=2)
+              print(f"\n{len(updated)} composant(s) mis à jour")
+
+              # Écrire la liste des mises à jour
+              with open("updated_components.txt", "w") as f:
+                  f.write("\n".join(updated))
+          else:
+              print("\nAucune mise à jour détectée")
+
+          # Output pour GitHub Actions
+          with open(os.environ["GITHUB_OUTPUT"], "a") as f:
+              f.write(f"has_updates={'true' if updated else 'false'}\n")
+              f.write(f"update_count={len(updated)}\n")
+          SCRIPT
+
+      - name: Commit version updates
+        id: commit
+        if: steps.update.outputs.has_updates == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          git add components.json
+
+          # Message de commit avec les composants mis à jour
+          UPDATES=$(cat updated_components.txt)
+          git commit -m "chore: update dependency versions
+
+          $UPDATES"
+
+          git push
+          echo "committed=true" >> $GITHUB_OUTPUT
+
+      - name: Check if should build
+        id: should_build
+        run: |
+          # Build si: push manuel OU versions mises à jour
+          if [ "${{ github.event_name }}" == "push" ]; then
+            echo "build=true" >> $GITHUB_OUTPUT
+            echo "Build triggered by push"
+          elif [ "${{ steps.update.outputs.has_updates }}" == "true" ]; then
+            echo "build=true" >> $GITHUB_OUTPUT
+            echo "Build triggered by version updates"
+          else
+            echo "build=false" >> $GITHUB_OUTPUT
+            echo "No build needed - no changes detected"
+          fi
+
+      - name: Generate version and changelog
+        id: version
+        if: steps.should_build.outputs.build == 'true'
+        run: |
+          # Re-pull si commit effectué
+          if [ "${{ steps.commit.outputs.committed }}" == "true" ]; then
+            git pull
+          fi
+
+          # Version basée sur la date
+          VERSION=$(date +'%Y.%m.%d')
+
+          # Ajouter un suffixe si plusieurs releases le même jour
+          EXISTING_TAGS=$(git tag -l "${VERSION}*" | wc -l)
+          if [ "$EXISTING_TAGS" -gt 0 ]; then
+            VERSION="${VERSION}.${EXISTING_TAGS}"
+          fi
+
+          echo "version=${VERSION}" >> $GITHUB_OUTPUT
+
+          # Générer le changelog depuis le dernier tag
+          LAST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
+
+          if [ -n "$LAST_TAG" ]; then
+            CHANGELOG=$(git log ${LAST_TAG}..HEAD --pretty=format:"- %s (%h)" --no-merges)
+          else
+            CHANGELOG=$(git log -20 --pretty=format:"- %s (%h)" --no-merges)
+          fi
+
+          # Ajouter les mises à jour de versions si présentes
+          if [ -f "updated_components.txt" ]; then
+            VERSION_UPDATES=$(cat updated_components.txt)
+            {
+              echo "changelog<<EOF"
+              echo "## Changelog"
+              echo ""
+              echo "$CHANGELOG"
+              echo ""
+              echo "## Updated Dependencies"
+              echo ""
+              echo "$VERSION_UPDATES" | sed 's/^/- /'
+              echo "EOF"
+            } >> $GITHUB_OUTPUT
+          else
+            {
+              echo "changelog<<EOF"
+              echo "## Changelog"
+              echo ""
+              echo "$CHANGELOG"
+              echo "EOF"
+            } >> $GITHUB_OUTPUT
+          fi
+
+      - name: Build pack
+        if: steps.should_build.outputs.build == 'true'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          chmod +x ./auto_builder.py
+          python ./auto_builder.py Ethiquema ethiquema-pack
+
+      - name: Get build output
+        id: build
+        if: steps.should_build.outputs.build == 'true'
+        run: |
+          ZIP_PATH=$(ls dist/*.zip | head -1)
+          ZIP_NAME=$(basename "$ZIP_PATH")
+          echo "zip_path=${ZIP_PATH}" >> $GITHUB_OUTPUT
+          echo "zip_name=${ZIP_NAME}" >> $GITHUB_OUTPUT
+
+      - name: Create Release
+        if: steps.should_build.outputs.build == 'true'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.version.outputs.version }}
+          name: Release ${{ steps.version.outputs.version }}
+          body: ${{ steps.version.outputs.changelog }}
+          files: |
+            ${{ steps.build.outputs.zip_path }}
+            dist/*.txt
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

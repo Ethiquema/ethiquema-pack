@@ -1,0 +1,22 @@
+# Build output
+dist/
+*.zip
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.venv/
+venv/
+
+# Temp files
+*.tmp
+*.bak
+tools_manifest.json
+last_manifest.json
+updated_components.txt
+
+# IDE
+.idea/
+.vscode/
+*.swp
