@@ -69,6 +69,10 @@
         "processing_steps": [
           {
             "action": "unzip_to_root"
+          },
+          {
+            "action": "delete_file",
+            "path": "/switch/reboot_to_payload.nro"
           }
         ]
       }
